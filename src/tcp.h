@@ -11,7 +11,7 @@ class Tcp: public Queueable {
     public:
         bool start(std::map<std::string, std::string> options);
         void enqueue(std::vector<std::string> * items);
-        void dequeue(std::vector<std::string> * items);
+        void dequeue(std::vector<std::string> * items, int num_items);
         void stop();
 
     protected:

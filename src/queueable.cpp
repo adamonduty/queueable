@@ -3,6 +3,8 @@
 #include <map>
 #include <stdio.h>
 #include <string>
+#include <string.h>
+#include <stdint.h>
 #include <vector>
 
 // Run a series of tests with this backend
@@ -13,7 +15,7 @@ void Queueable::run_tests()
     {
         for (int i = 1; i <= 4096; i*=2)
         {
-            test_enqueue(10000, i);
+            test_enqueue(1000000, i);
             printf("enqueued 10000 items of size %d\n", i);
         }
     }
@@ -23,7 +25,7 @@ void Queueable::run_tests()
     {
         for (int i = 1; i <= 4096; i*=2)
         {
-            test_dequeue(10000);
+            test_dequeue(1000000);
             printf("dequeued 10000 items of size %d\n", i);
         }
     }
@@ -31,17 +33,22 @@ void Queueable::run_tests()
       printf("Unable to run tests\n");
 }
 
-void Queueable::test_enqueue(int num_items, int msg_size)
+void Queueable::test_enqueue(int num_items, uint32_t msg_size)
 {
     std::vector<std::string> items;
+    char msg_size_buffer[4];
+
     items.reserve(1000);
+    msg_size += 4; // room for pascal string
+    memcpy(msg_size_buffer, &msg_size, 4);
 
     // Build 1000 item vector with desired message size
     for (int i = 0; i < 1000; ++i)
     {
         std::string str;
         str.reserve(msg_size);
-        for (int j = 0; j < msg_size; ++j)
+        str.append(msg_size_buffer, 4);
+        for (uint32_t j = 0; j < msg_size; ++j)
             str.append("a");
 
         items.push_back(str);
@@ -59,7 +66,7 @@ void Queueable::test_dequeue(int num_items)
 
     for (int i = 0; i < num_items/1000; ++i)
     {
-        dequeue(&items);
+        dequeue(&items, 1000);
         items.clear();
     }
 }
