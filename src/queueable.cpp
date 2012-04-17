@@ -2,9 +2,12 @@
 
 #include <map>
 #include <stdio.h>
+#include <stdlib.h>
+#include <sstream>
 #include <string>
 #include <string.h>
 #include <stdint.h>
+#include <sys/time.h>
 #include <vector>
 
 // Run a series of tests with this backend
@@ -15,8 +18,14 @@ void Queueable::run_tests()
     {
         for (int i = 1; i <= 4096; i*=2)
         {
+            std::string msg = "enqueue a million items of size ";
+            std::stringstream ss;
+            ss << i;
+            msg.append(ss.str());
+
+            start_test(msg);
             test_enqueue(1000000, i);
-            printf("enqueued 10000 items of size %d\n", i);
+            stop_test();
         }
     }
 
@@ -25,34 +34,53 @@ void Queueable::run_tests()
     {
         for (int i = 1; i <= 4096; i*=2)
         {
+            std::string msg = "dequeue a million items of size ";
+            std::stringstream ss;
+            ss << i;
+            msg.append(ss.str());
+
+            start_test(msg);
             test_dequeue(1000000);
-            printf("dequeued 10000 items of size %d\n", i);
+            stop_test();
         }
     }
     else
       printf("Unable to run tests\n");
 }
 
+void Queueable::start_test(std::string msg)
+{
+    test_message = msg;
+    gettimeofday(&start_tv, NULL);
+}
+
+void Queueable::stop_test()
+{
+    struct timeval diff;
+    gettimeofday(&stop_tv, NULL);
+
+    timersub(&stop_tv, &start_tv, &diff);
+
+    printf("%s: %ld.%06ld\n", test_message.c_str(), diff.tv_sec, diff.tv_usec);
+}
+
 void Queueable::test_enqueue(int num_items, uint32_t msg_size)
 {
     std::vector<std::string> items;
-    char msg_size_buffer[4];
-
+    char * buffer = NULL;
     items.reserve(1000);
-    msg_size += 4; // room for pascal string
-    memcpy(msg_size_buffer, &msg_size, 4);
+
+    buffer = (char *) malloc(msg_size);
 
     // Build 1000 item vector with desired message size
     for (int i = 0; i < 1000; ++i)
     {
         std::string str;
         str.reserve(msg_size);
-        str.append(msg_size_buffer, 4);
-        for (uint32_t j = 0; j < msg_size; ++j)
-            str.append("a");
-
+        str.append(buffer, msg_size);
         items.push_back(str);
     }
+    free(buffer);
 
     for (int i = 0; i < num_items/1000; ++i)
     {

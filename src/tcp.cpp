@@ -125,10 +125,29 @@ int Tcp::get_port()
 void Tcp::enqueue(std::vector<std::string> * items)
 {
     std::vector<std::string>::iterator it;
+    char msg_size_buffer[4];
+    uint32_t msg_size = 0;
+    uint32_t count = 0;
+    uint32_t offset = 0;
 
     for (it = items->begin(); it != items->end(); ++it)
     {
-        write(sockfd, it->c_str(), it->size());
+        msg_size = (uint32_t) it->size();
+        memcpy(msg_size_buffer, &msg_size, 4);
+
+        offset = 0;
+        while (sizeof(msg_size) - offset > 0)
+        {
+            count = write(sockfd, msg_size_buffer+offset, sizeof(msg_size) - offset);
+            offset += count;
+        }
+
+        offset = 0;
+        while (it->size() - offset > 0)
+        {
+            count = write(sockfd, it->c_str() + offset, it->size() - offset);
+            offset += count;
+        }
     }
 }
 
@@ -138,14 +157,22 @@ void Tcp::dequeue(std::vector<std::string> * items, int num_items)
     uint32_t buffer_size = 4096;
     uint32_t str_size = 0;
     int count = 0;
+    int offset = 0;
     std::string item;
 
     // Initial buffer size at 4096
     buffer = (char *) malloc(buffer_size);
 
     // Read 4 bytes for string size
-    while ((count = read(sockfd, buffer, 4)) > 0)
+    while ((int) items->size() < num_items)
     {
+        offset = 0;
+        while (sizeof(str_size) - offset > 0)
+        {
+            count = read(sockfd, buffer + offset, sizeof(str_size) - offset);
+            offset += count;
+        }
+
         memcpy(&str_size, buffer, 4);
         if (str_size > buffer_size)
         {
@@ -154,18 +181,17 @@ void Tcp::dequeue(std::vector<std::string> * items, int num_items)
         }
 
         // Read the rest of the message
+        offset = 0;
         item.clear();
         item.reserve(str_size);
 
-        while (str_size > 0 && (count = read(sockfd, buffer, str_size)) > 0)
+        while (str_size - offset > 0)
         {
-            str_size -= count;
+            count = read(sockfd, buffer + offset, str_size - offset);
+            offset += count;
             item.append(buffer, count);
         }
         items->push_back(item);
-
-        if ((int) items->size() >= num_items)
-            break;
     }
 
     free(buffer);
@@ -173,4 +199,5 @@ void Tcp::dequeue(std::vector<std::string> * items, int num_items)
 
 void Tcp::stop()
 {
+    close(sockfd);
 }
