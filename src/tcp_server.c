@@ -9,15 +9,11 @@ int main()
 {
     Tcp tcp;
     std::map<std::string, std::string> options;
-    std::vector<std::string> items;
 
-    options["mode"] = "server";
     options["port"] = "10000";
+    options["items"] = "1000000";
+    options["clients"] = "32";
+    tcp.run_tests(options);
 
-    if (tcp.start(options) == true)
-    {
-        printf("connected\n");
-        tcp.run_tests();
-        tcp.stop();
-    }
+    return 0;
 }

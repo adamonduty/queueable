@@ -2,7 +2,7 @@ CC=g++
 UNAME := $(shell uname)
 
 ifeq ($(UNAME), Linux)
-CFLAGS += -Wall -Wextra
+CFLAGS += -Wall -Wextra -g
 endif
 
 ifeq ($(UNAME), SunOS)
@@ -10,18 +10,16 @@ LDLIBS=-lsocket -lnsl
 endif
 
 
-EXECUTABLES=tcp_client tcp_server
+EXECUTABLES=tcp_server
 
 all: $(EXECUTABLES)
 
-tcp_client: tcp_client.c tcp.cpp queueable.cpp
 tcp_server: tcp_server.c tcp.cpp queueable.cpp
 
 test: test_tcp
 
 test_tcp:
-	time ./tcp_server &
-	time ./tcp_client
+	time ./tcp_server
 
 
 .PHONY: clean

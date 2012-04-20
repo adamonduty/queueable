@@ -9,18 +9,25 @@
 
 class Tcp: public Queueable {
     public:
-        bool start(std::map<std::string, std::string> options);
+        void before_fork();
+        void after_fork();
+        void cleanup();
         void enqueue(std::vector<std::string> * items);
-        void dequeue(std::vector<std::string> * items, int num_items);
-        void stop();
+        void dequeue(std::vector<std::string> * items);
 
     protected:
         bool setup_server();
         bool setup_client();
-        int get_port();
 
     private:
+        // parent
+        std::vector<int> conn_fds;
+
+        // parent and child
         int sockfd;
+
+        // child
+        int connection_count;
 };
 
 #endif

@@ -1,5 +1,6 @@
 #include "queueable.h"
 
+#include <list>
 #include <map>
 #include <stdio.h>
 #include <stdlib.h>
@@ -8,45 +9,109 @@
 #include <string.h>
 #include <stdint.h>
 #include <sys/time.h>
+#include <sys/types.h>
+#include <sys/wait.h>
 #include <vector>
 
 // Run a series of tests with this backend
-void Queueable::run_tests()
+void Queueable::run_tests(std::map<std::string, std::string> options)
 {
+    this->options = options;
+
+    // Set default options
+    child = false;
+    parent = false;
+    children.clear();
+
+printf("before_fork()\n");
+    before_fork();
+printf("perform_fork()\n");
+    perform_fork();
+printf("after_fork(), parent = %d, child = %d\n", parent, child);
+    after_fork();
+printf("finished after_fork(), parent = %d, child = %d\n", parent, child);
+
+    // Start timer, run test, stop timer
+    start_test("enqueue a million items");
+    if (parent == true)
+    {
+        test_enqueue(get_items(), 1);
+    }
+    else if (child == true)
+    {
+        test_dequeue();
+    }
+
+printf("cleanup, parent = %d, child = %d\n", parent, child);
+    cleanup();
+    perform_wait();
+    stop_test();
+
     // Server distributes work
-    if (options["mode"].compare("server") == 0)
-    {
-        for (int i = 1; i <= 4096; i*=2)
-        {
-            std::string msg = "enqueue a million items of size ";
-            std::stringstream ss;
-            ss << i;
-            msg.append(ss.str());
+    //if (options["mode"] == "server")
+    //{
+    //    for (int i = 1; i <= 4096; i*=2)
+    //    {
+    //        std::string msg = "enqueue a million items of size ";
+    //        std::stringstream ss;
+    //        ss << i;
+    //        msg.append(ss.str());
 
-            start_test(msg);
-            test_enqueue(1000000, i);
-            stop_test();
-        }
-    }
+    //        start_test(msg);
+    //        test_enqueue(1000000, i);
+    //        stop_test();
+    //    }
+    //}
 
-    // Client consumes work
-    else if (options["mode"].compare("client") == 0)
-    {
-        for (int i = 1; i <= 4096; i*=2)
-        {
-            std::string msg = "dequeue a million items of size ";
-            std::stringstream ss;
-            ss << i;
-            msg.append(ss.str());
+    //// Client consumes work
+    //else if (options["mode"].compare("client") == 0)
+    //{
+    //    for (int i = 1; i <= 4096; i*=2)
+    //    {
+    //        std::string msg = "dequeue a million items of size ";
+    //        std::stringstream ss;
+    //        ss << i;
+    //        msg.append(ss.str());
 
-            start_test(msg);
-            test_dequeue(1000000);
-            stop_test();
-        }
-    }
-    else
-      printf("Unable to run tests\n");
+    //        start_test(msg);
+    //        test_dequeue(1000000);
+    //        stop_test();
+    //    }
+    //}
+    //else
+    //  printf("Unable to run tests\n");
 }
+
+void Queueable::perform_fork()
+{
+    int clients = 0;
+
+    clients = get_clients();
+    for (int i = 0; i < clients; ++i)
+    {
+        child = false;
+        parent = false;
+        pid_t pid = fork();
+
+        if (pid == 0) // child
+        {
+            child = true;
+            break;
+        }
+        else if (pid > 0) // parent
+        {
+            parent = true;
+            children.push_back((int) pid);
+        }
+        else // error
+        {
+            parent = false;
+            child = false;
+            perror("fork failed");
+        }
+    }
+}
+
 
 void Queueable::start_test(std::string msg)
 {
@@ -88,13 +153,57 @@ void Queueable::test_enqueue(int num_items, uint32_t msg_size)
     }
 }
 
-void Queueable::test_dequeue(int num_items)
+void Queueable::test_dequeue()
 {
     std::vector<std::string> items;
 
-    for (int i = 0; i < num_items/1000; ++i)
+    do
     {
-        dequeue(&items, 1000);
         items.clear();
+        dequeue(&items);
     }
+    while (items.size() > 0);
+}
+
+void Queueable::perform_wait()
+{
+    int status = 0;
+    std::list<int>::iterator it;
+
+    if (parent == true)
+    {
+        for (it = children.begin(); it != children.end(); ++it)
+        {
+            printf("waiting for pid %d\n", *it);
+            if (waitpid(*it, &status, 0) < 0)
+                perror("waitpid fail");
+        }
+    }
+}
+
+int Queueable::get_clients()
+{
+    std::stringstream ss(options["clients"]);
+    int clients;
+    ss >> clients;
+
+    return clients;
+}
+
+int Queueable::get_items()
+{
+    std::stringstream ss(options["items"]);
+    int items;
+    ss >> items;
+
+    return items;
+}
+
+int Queueable::get_port()
+{
+    std::stringstream ss(options["port"]);
+    int port;
+    ss >> port;
+
+    return port;
 }
