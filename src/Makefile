@@ -10,11 +10,11 @@ LDLIBS=-lsocket -lnsl
 endif
 
 
-EXECUTABLES=tcp_server
+EXECUTABLES=run_queueable
 
 all: $(EXECUTABLES)
 
-tcp_server: tcp_server.c tcp.cpp queueable.cpp
+run_queueable: run_queueable.cpp socket.cpp stream_socket.cpp queueable.cpp tcp.cpp
 
 test: test_tcp
 
