@@ -34,7 +34,7 @@ class Queueable {
         void perform_wait();
 
         // Convenience methods for attributes
-        int get_threads();
+        int get_max_threads();
         int get_items();
         int get_port();
         int get_max_msg_size();
@@ -51,6 +51,7 @@ class Queueable {
         std::list<int> children;
 
         int msg_size;
+        int threads;
 };
 
 #endif

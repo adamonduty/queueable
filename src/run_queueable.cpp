@@ -24,8 +24,8 @@ int main()
 {
     options["port"] = "10000";
     options["items"] = "1000000";
-    options["max_msg_size"] = "4096";
-    options["max_threads"] = "32";
+    options["max_msg_size"] = "128";
+    options["max_threads"] = "4";
     options["path"] = "/tmp/queueable-socket";
 
     printf("<tests>\n");

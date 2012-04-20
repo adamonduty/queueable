@@ -10,7 +10,6 @@
 void StreamSocket::after_fork()
 {
     int connfd = 0;
-    int threads = get_threads();
 
     // accept all children
     if (parent == true)

@@ -17,11 +17,16 @@ void Queueable::run_tests(std::map<std::string, std::string> options)
 {
     this->options = options;
     int max_msg_size = get_max_msg_size();
+    int max_threads = get_max_threads();
 
-    for (int i = 1; i <= max_msg_size; i *= 2)
+    for (int i = 1; i < max_threads; i *= 2)
     {
-        msg_size = i;
-        run_test();
+        for (int j = 1; j <= max_msg_size; j *= 2)
+        {
+            threads = i;
+            msg_size = j;
+            run_test();
+        }
     }
 }
 
@@ -71,9 +76,6 @@ void Queueable::run_test()
 
 void Queueable::perform_fork()
 {
-    int threads = 0;
-
-    threads = get_threads();
     for (int i = 0; i < threads; ++i)
     {
         child = false;
@@ -118,7 +120,7 @@ void Queueable::print_results()
 {
     printf("<test>");
     printf("<type>%s</type>", backend_name());
-    printf("<name>%d-thread</name>", get_threads());
+    printf("<name>%d-thread</name>", threads);
     printf("<seconds>%ld.%06ld</seconds>", duration.tv_sec, duration.tv_usec);
     printf("<msg_size>%d</msg_size>", msg_size);
     printf("</test>\n");
@@ -180,13 +182,13 @@ void Queueable::perform_wait()
     }
 }
 
-int Queueable::get_threads()
+int Queueable::get_max_threads()
 {
     std::stringstream ss(options["max_threads"]);
-    int threads;
-    ss >> threads;
+    int tmp;
+    ss >> tmp;
 
-    return threads;
+    return tmp;
 }
 
 int Queueable::get_items()
