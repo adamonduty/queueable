@@ -13,10 +13,21 @@
 #include <sys/wait.h>
 #include <vector>
 
-// Run a series of tests with this backend
 void Queueable::run_tests(std::map<std::string, std::string> options)
 {
     this->options = options;
+    int max_msg_size = get_max_msg_size();
+
+    for (int i = 1; i <= max_msg_size; i *= 2)
+    {
+        msg_size = i;
+        run_test();
+    }
+}
+
+// Run a single test with this backend
+void Queueable::run_test()
+{
 
     // Set default options
     child = false;
@@ -32,10 +43,17 @@ printf("after_fork(), parent = %d, child = %d\n", parent, child);
 printf("finished after_fork(), parent = %d, child = %d\n", parent, child);
 
     // Start timer, run test, stop timer
-    start_test("enqueue a million items");
+    std::string msg = "enqueue ";
+    msg.append(options["items"]);
+    msg.append(" items of size ");
+    std::stringstream ss("");
+    ss << msg_size;
+    msg.append(ss.str());
+
+    start_test(msg);
     if (parent == true)
     {
-        test_enqueue(get_items(), 1);
+        test_enqueue(get_items(), msg_size);
     }
     else if (child == true)
     {
@@ -101,6 +119,7 @@ void Queueable::perform_fork()
         else if (pid > 0) // parent
         {
             parent = true;
+printf("add pid to list: %d from process %d\n", pid, getpid());
             children.push_back((int) pid);
         }
         else // error
@@ -179,6 +198,10 @@ void Queueable::perform_wait()
                 perror("waitpid fail");
         }
     }
+    else if (child == true)
+    {
+        exit(0);
+    }
 }
 
 int Queueable::get_clients()
@@ -206,4 +229,13 @@ int Queueable::get_port()
     ss >> port;
 
     return port;
+}
+
+int Queueable::get_max_msg_size()
+{
+    std::stringstream ss(options["max_msg_size"]);
+    int size;
+    ss >> size;
+
+    return size;
 }

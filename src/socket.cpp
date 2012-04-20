@@ -49,29 +49,23 @@ bool Socket::setup_server()
 
 bool Socket::setup_client()
 {
-    struct sockaddr_in server_addr;
-    int port = get_port();
-    struct in_addr addr;
+    perform_client_socket();
+    setup_client_connect();
+    perform_client_connect();
+}
 
-    inet_pton(AF_INET, "127.0.0.1", &addr);
-
-    /* Setup sockaddr_in */
-    bzero(&server_addr, sizeof(server_addr));
-    server_addr.sin_family = AF_INET;
-    server_addr.sin_addr = addr;
-    server_addr.sin_port = htons(port);
-
+void Socket::perform_client_socket()
+{
     /* attempt to get socket */
-    if ((sockfd = socket(AF_INET, SOCK_STREAM, 0)) < 0) {
+    if ((sockfd = socket(socket_family(), socket_type(), 0)) < 0) {
         perror("socket fail");
-        return false;
     }
+}
 
+void Socket::perform_client_connect()
+{
     /* attempt connect */
-    if (connect(sockfd, (struct sockaddr *) &server_addr, sizeof(server_addr)) != 0) {
+    if (connect(sockfd, client_addr, client_addr_size) != 0) {
         perror("connect fail");
-        return false;
     }
-
-    return true;
 }

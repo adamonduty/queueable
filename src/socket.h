@@ -23,9 +23,13 @@ class Socket: public Queueable {
         virtual void perform_bind();
         virtual void perform_listen();
 
+        virtual void perform_client_socket();
+        virtual void perform_client_connect();
+
         virtual int socket_family() = 0;
         virtual int socket_type() = 0;
         virtual void setup_bind() = 0;
+        virtual void setup_client_connect() = 0;
 
         // parent
         struct sockaddr * server_addr;
@@ -33,6 +37,10 @@ class Socket: public Queueable {
 
         // parent and child
         int sockfd;
+
+        // child
+        struct sockaddr * client_addr;
+        int client_addr_size;
 };
 
 #endif

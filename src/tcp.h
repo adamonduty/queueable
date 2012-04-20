@@ -12,8 +12,10 @@ class Tcp: public StreamSocket {
     protected:
         int socket_family();
         void setup_bind();
+        void setup_client_connect();
 
         struct sockaddr_in sock_in;
+        struct sockaddr_in client_sock_in;
 };
 
 #endif

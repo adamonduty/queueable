@@ -45,11 +45,10 @@ void StreamSocket::cleanup()
             close(*it);
         }
     }
-    // Close connection with server
-    else if (child == true)
-    {
-        close(sockfd);
-    }
+
+    // For child, close connection with parent
+    // For parent, close accept fd
+    close(sockfd);
 }
 
 void StreamSocket::enqueue(std::vector<std::string> * items)

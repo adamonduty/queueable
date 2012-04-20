@@ -16,10 +16,8 @@ class Queueable {
         virtual void enqueue(std::vector<std::string> * items) = 0;
         virtual void dequeue(std::vector<std::string> * items) = 0;
 
-        //virtual bool start(std::map<std::string, std::string> options) = 0;
-        //virtual void stop() = 0;
-
         void run_tests(std::map<std::string, std::string> options);
+        void run_test();
         void perform_fork();
         void start_test(std::string msg);
         void stop_test();
@@ -31,7 +29,7 @@ class Queueable {
         int get_clients();
         int get_items();
         int get_port();
-
+        int get_max_msg_size();
 
     protected:
         std::map<std::string, std::string> options;
@@ -42,6 +40,8 @@ class Queueable {
         bool child;
         bool parent;
         std::list<int> children;
+
+        int msg_size;
 };
 
 #endif

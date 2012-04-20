@@ -14,12 +14,12 @@ EXECUTABLES=run_queueable
 
 all: $(EXECUTABLES)
 
-run_queueable: run_queueable.cpp socket.cpp stream_socket.cpp queueable.cpp tcp.cpp
+run_queueable: run_queueable.cpp socket.cpp stream_socket.cpp queueable.cpp tcp.cpp udss.cpp
 
 test: test_tcp
 
 test_tcp:
-	time ./tcp_server
+	time ./run_queueable
 
 
 .PHONY: clean
