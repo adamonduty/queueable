@@ -8,6 +8,12 @@
 #include <stdint.h>
 #include <vector>
 
+#ifdef DEBUG
+  #define D if (1)
+#else
+  #define D if (0)
+#endif
+
 class Queueable {
     public:
         virtual void before_fork() = 0;

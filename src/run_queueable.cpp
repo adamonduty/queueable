@@ -25,7 +25,7 @@ int main()
     options["port"] = "10000";
     options["items"] = "1000000";
     options["max_msg_size"] = "4096";
-    options["clients"] = "2";
+    options["clients"] = "16";
     options["path"] = "/tmp/queueable-socket";
 
 printf("start tcp tests ******************\n");

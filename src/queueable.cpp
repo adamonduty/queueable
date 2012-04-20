@@ -34,13 +34,16 @@ void Queueable::run_test()
     parent = false;
     children.clear();
 
-printf("before_fork()\n");
+    D fprintf(stderr, "before_fork()\n");
     before_fork();
-printf("perform_fork()\n");
+
+    D fprintf(stderr, "perform_fork()\n");
     perform_fork();
-printf("after_fork(), parent = %d, child = %d\n", parent, child);
+
+    D fprintf(stderr, "after_fork(), parent = %d, child = %d\n", parent, child);
     after_fork();
-printf("finished after_fork(), parent = %d, child = %d\n", parent, child);
+
+    D fprintf(stderr, "finished after_fork(), parent = %d, child = %d\n", parent, child);
 
     // Start timer, run test, stop timer
     std::string msg = "enqueue ";
@@ -60,44 +63,10 @@ printf("finished after_fork(), parent = %d, child = %d\n", parent, child);
         test_dequeue();
     }
 
-printf("cleanup, parent = %d, child = %d\n", parent, child);
+    D fprintf(stderr, "cleanup, parent = %d, child = %d\n", parent, child);
     cleanup();
     perform_wait();
     stop_test();
-
-    // Server distributes work
-    //if (options["mode"] == "server")
-    //{
-    //    for (int i = 1; i <= 4096; i*=2)
-    //    {
-    //        std::string msg = "enqueue a million items of size ";
-    //        std::stringstream ss;
-    //        ss << i;
-    //        msg.append(ss.str());
-
-    //        start_test(msg);
-    //        test_enqueue(1000000, i);
-    //        stop_test();
-    //    }
-    //}
-
-    //// Client consumes work
-    //else if (options["mode"].compare("client") == 0)
-    //{
-    //    for (int i = 1; i <= 4096; i*=2)
-    //    {
-    //        std::string msg = "dequeue a million items of size ";
-    //        std::stringstream ss;
-    //        ss << i;
-    //        msg.append(ss.str());
-
-    //        start_test(msg);
-    //        test_dequeue(1000000);
-    //        stop_test();
-    //    }
-    //}
-    //else
-    //  printf("Unable to run tests\n");
 }
 
 void Queueable::perform_fork()
@@ -119,7 +88,6 @@ void Queueable::perform_fork()
         else if (pid > 0) // parent
         {
             parent = true;
-printf("add pid to list: %d from process %d\n", pid, getpid());
             children.push_back((int) pid);
         }
         else // error
@@ -130,7 +98,6 @@ printf("add pid to list: %d from process %d\n", pid, getpid());
         }
     }
 }
-
 
 void Queueable::start_test(std::string msg)
 {
@@ -193,7 +160,7 @@ void Queueable::perform_wait()
     {
         for (it = children.begin(); it != children.end(); ++it)
         {
-            printf("waiting for pid %d\n", *it);
+            D fprintf(stderr, "waiting for pid %d\n", *it);
             if (waitpid(*it, &status, 0) < 0)
                 perror("waitpid fail");
         }
