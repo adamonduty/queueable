@@ -25,13 +25,13 @@ int main()
     options["port"] = "10000";
     options["items"] = "1000000";
     options["max_msg_size"] = "4096";
-    options["clients"] = "16";
+    options["max_threads"] = "32";
     options["path"] = "/tmp/queueable-socket";
 
-printf("start tcp tests ******************\n");
+    printf("<tests>\n");
     run_tcp();
-printf("start udss tests ******************\n");
     run_udss();
+    printf("</tests>\n");
 
     return 0;
 }

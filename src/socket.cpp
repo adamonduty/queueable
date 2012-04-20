@@ -34,7 +34,7 @@ void Socket::perform_bind()
 void Socket::perform_listen()
 {
     /* attempt listen */
-    if (listen(sockfd, get_clients()) < 0)
+    if (listen(sockfd, get_threads()) < 0)
         perror("listen fail");
 }
 

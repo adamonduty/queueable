@@ -16,6 +16,7 @@
 
 class Queueable {
     public:
+        virtual const char * backend_name() = 0;
         virtual void before_fork() = 0;
         virtual void after_fork() = 0;
         virtual void cleanup() = 0;
@@ -27,12 +28,13 @@ class Queueable {
         void perform_fork();
         void start_test(std::string msg);
         void stop_test();
+        void print_results();
         void test_enqueue(int num_items, uint32_t msg_size);
         void test_dequeue();
         void perform_wait();
 
         // Convenience methods for attributes
-        int get_clients();
+        int get_threads();
         int get_items();
         int get_port();
         int get_max_msg_size();
@@ -41,6 +43,7 @@ class Queueable {
         std::map<std::string, std::string> options;
         struct timeval start_tv;
         struct timeval stop_tv;
+        struct timeval duration;
         std::string test_message;
 
         bool child;

@@ -4,6 +4,11 @@
 #include <sys/types.h>
 #include <sys/un.h>
 
+const char * Udss::backend_name()
+{
+    return "Unix Domain Stream Socket";
+}
+
 int Udss::socket_family()
 {
     return AF_UNIX;

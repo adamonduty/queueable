@@ -3,6 +3,11 @@
 #include <arpa/inet.h>
 #include <strings.h>
 
+const char * Tcp::backend_name()
+{
+    return "TCP Socket";
+}
+
 int Tcp::socket_family()
 {
     return AF_INET;

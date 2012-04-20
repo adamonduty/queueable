@@ -10,12 +10,12 @@
 void StreamSocket::after_fork()
 {
     int connfd = 0;
-    int clients = get_clients();
+    int threads = get_threads();
 
     // accept all children
     if (parent == true)
     {
-        for (int i = 0; i < clients; ++i)
+        for (int i = 0; i < threads; ++i)
         {
             /* attempt accept */
             if ((connfd = accept(sockfd, NULL, NULL)) < 0) {

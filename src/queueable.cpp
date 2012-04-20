@@ -71,10 +71,10 @@ void Queueable::run_test()
 
 void Queueable::perform_fork()
 {
-    int clients = 0;
+    int threads = 0;
 
-    clients = get_clients();
-    for (int i = 0; i < clients; ++i)
+    threads = get_threads();
+    for (int i = 0; i < threads; ++i)
     {
         child = false;
         parent = false;
@@ -107,12 +107,21 @@ void Queueable::start_test(std::string msg)
 
 void Queueable::stop_test()
 {
-    struct timeval diff;
     gettimeofday(&stop_tv, NULL);
 
-    timersub(&stop_tv, &start_tv, &diff);
+    timersub(&stop_tv, &start_tv, &duration);
 
-    printf("%s: %ld.%06ld\n", test_message.c_str(), diff.tv_sec, diff.tv_usec);
+    print_results();
+}
+
+void Queueable::print_results()
+{
+    printf("<test>");
+    printf("<type>%s</type>", backend_name());
+    printf("<name>%d-thread</name>", get_threads());
+    printf("<seconds>%ld.%06ld</seconds>", duration.tv_sec, duration.tv_usec);
+    printf("<msg_size>%d</msg_size>", msg_size);
+    printf("</test>\n");
 }
 
 void Queueable::test_enqueue(int num_items, uint32_t msg_size)
@@ -171,13 +180,13 @@ void Queueable::perform_wait()
     }
 }
 
-int Queueable::get_clients()
+int Queueable::get_threads()
 {
-    std::stringstream ss(options["clients"]);
-    int clients;
-    ss >> clients;
+    std::stringstream ss(options["max_threads"]);
+    int threads;
+    ss >> threads;
 
-    return clients;
+    return threads;
 }
 
 int Queueable::get_items()

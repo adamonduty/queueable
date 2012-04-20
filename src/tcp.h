@@ -10,6 +10,7 @@
 
 class Tcp: public StreamSocket {
     protected:
+        const char * backend_name();
         int socket_family();
         void setup_bind();
         void setup_client_connect();
