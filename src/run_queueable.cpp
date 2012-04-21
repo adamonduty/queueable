@@ -21,8 +21,8 @@ int main()
 
     uname(&name);
 
-    printf("<?xml version=\"1.0\">\n");
-    printf("<tests>\n");
+    printf("<?xml version=\"1.0\"?>\n");
+    printf("<test_run>\n");
     printf("<platform><sysname>%s</sysname><release>%s</release><version>%s</version><machine>%s</machine></platform>\n",
       name.sysname, name.release, name.version, name.machine);
 
@@ -35,7 +35,7 @@ int main()
     Udds udds;
     udds.run_tests(options);
 
-    printf("</tests>\n");
+    printf("</test_run>\n");
 
     return 0;
 }
