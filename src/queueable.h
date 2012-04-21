@@ -52,6 +52,7 @@ class Queueable {
 
         int msg_size;
         int threads;
+        int thread_id;
 };
 
 #endif

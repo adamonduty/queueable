@@ -9,7 +9,7 @@
 
 class Socket: public Queueable {
     public:
-        void before_fork();
+        virtual void before_fork();
         virtual void after_fork() = 0;
         virtual void cleanup() = 0;
         virtual void enqueue(std::vector<std::string> * items) = 0;
@@ -24,11 +24,13 @@ class Socket: public Queueable {
         virtual void perform_listen();
 
         virtual void perform_client_socket();
+        virtual void perform_client_bind();
         virtual void perform_client_connect();
 
         virtual int socket_family() = 0;
         virtual int socket_type() = 0;
         virtual void setup_bind() = 0;
+        virtual void setup_client_bind() = 0;
         virtual void setup_client_connect() = 0;
 
         // parent

@@ -13,6 +13,7 @@ class Tcp: public StreamSocket {
         const char * backend_name();
         int socket_family();
         void setup_bind();
+        void setup_client_bind();
         void setup_client_connect();
 
         struct sockaddr_in sock_in;

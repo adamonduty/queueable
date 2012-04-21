@@ -19,7 +19,7 @@ void Queueable::run_tests(std::map<std::string, std::string> options)
     int max_msg_size = get_max_msg_size();
     int max_threads = get_max_threads();
 
-    for (int i = 1; i < max_threads; i *= 2)
+    for (int i = 1; i <= max_threads; i *= 2)
     {
         for (int j = 1; j <= max_msg_size; j *= 2)
         {
@@ -85,6 +85,7 @@ void Queueable::perform_fork()
         if (pid == 0) // child
         {
             child = true;
+            thread_id = i;
             break;
         }
         else if (pid > 0) // parent

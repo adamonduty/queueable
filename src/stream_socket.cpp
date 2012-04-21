@@ -149,3 +149,13 @@ int StreamSocket::socket_type()
 {
     return SOCK_STREAM;
 }
+
+// Ignore bind since stream sockets don't need it
+void StreamSocket::setup_client_bind()
+{
+}
+
+// Ignore bind since stream sockets don't need it
+void StreamSocket::perform_client_bind()
+{
+}

@@ -18,7 +18,10 @@ class StreamSocket: public Socket {
         virtual int socket_family() = 0;
         int socket_type();
         virtual void setup_bind() = 0;
+        virtual void setup_client_bind();
         virtual void setup_client_connect() = 0;
+
+        virtual void perform_client_bind();
 
         // parent
         std::vector<int> conn_fds;

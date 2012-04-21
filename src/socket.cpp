@@ -50,6 +50,8 @@ bool Socket::setup_server()
 bool Socket::setup_client()
 {
     perform_client_socket();
+    setup_client_bind();
+    perform_client_bind();
     setup_client_connect();
     perform_client_connect();
 }
@@ -59,6 +61,15 @@ void Socket::perform_client_socket()
     /* attempt to get socket */
     if ((sockfd = socket(socket_family(), socket_type(), 0)) < 0) {
         perror("socket fail");
+    }
+}
+
+void Socket::perform_client_bind()
+{
+    /* bind to address */
+    if (bind(sockfd, client_addr, client_addr_size) < 0)
+    {
+        perror("bind fail from client");
     }
 }
 

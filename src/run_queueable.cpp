@@ -5,6 +5,7 @@
 
 #include "tcp.h"
 #include "udss.h"
+#include "udds.h"
 
 int main()
 {
@@ -13,9 +14,10 @@ int main()
 
     options["port"] = "10000";
     options["items"] = "1000000";
-    options["max_msg_size"] = "128";
-    options["max_threads"] = "4";
+    options["max_msg_size"] = "4096";
+    options["max_threads"] = "32";
     options["path"] = "/tmp/queueable-socket";
+    options["client_path"] = "/tmp/queueable-socket-client";
 
     uname(&name);
 
@@ -29,6 +31,9 @@ int main()
 
     Udss udss;
     udss.run_tests(options);
+
+    Udds udds;
+    udds.run_tests(options);
 
     printf("</tests>\n");
 
