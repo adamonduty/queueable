@@ -121,7 +121,7 @@ void Queueable::print_results()
 {
     printf("<test>");
     printf("<type>%s</type>", backend_name());
-    printf("<name>%d-thread</name>", threads);
+    printf("<threads>%d</threads>", threads);
     printf("<seconds>%ld.%06ld</seconds>", duration.tv_sec, duration.tv_usec);
     printf("<msg_size>%d</msg_size>", msg_size);
     printf("</test>\n");
