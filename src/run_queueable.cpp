@@ -6,6 +6,7 @@
 #include "tcp.h"
 #include "udss.h"
 #include "udds.h"
+#include "mq.h"
 
 int main()
 {
@@ -18,6 +19,7 @@ int main()
     options["max_threads"] = "32";
     options["path"] = "/tmp/queueable-socket";
     options["client_path"] = "/tmp/queueable-socket-client";
+    options["message_queue"] = "/queueable";
 
     uname(&name);
 
@@ -34,6 +36,9 @@ int main()
 
     Udds udds;
     udds.run_tests(options);
+
+    Mq mq;
+    mq.run_tests(options);
 
     printf("</test_run>\n");
 

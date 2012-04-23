@@ -3,6 +3,7 @@ UNAME := $(shell uname)
 
 ifeq ($(UNAME), Linux)
 CXXFLAGS += -Wall -Wextra -g
+LDLIBS=-lrt
 endif
 
 ifeq ($(UNAME), SunOS)
@@ -14,7 +15,7 @@ EXECUTABLES=run_queueable
 
 all: $(EXECUTABLES)
 
-run_queueable: run_queueable.cpp socket.cpp stream_socket.cpp queueable.cpp tcp.cpp udss.cpp udds.cpp
+run_queueable: run_queueable.cpp socket.cpp stream_socket.cpp queueable.cpp tcp.cpp udss.cpp udds.cpp mq.cpp
 
 test: all
 	time ./run_queueable
