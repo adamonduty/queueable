@@ -28,6 +28,7 @@ class Queueable {
         void perform_fork();
         void start_test(std::string msg);
         void stop_test();
+        int timeval_subtract(struct timeval *result, struct timeval *x, struct timeval *y);
         void print_results();
         void test_enqueue(int num_items, uint32_t msg_size);
         void test_dequeue();

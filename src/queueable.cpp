@@ -112,9 +112,34 @@ void Queueable::stop_test()
 {
     gettimeofday(&stop_tv, NULL);
 
-    timersub(&stop_tv, &start_tv, &duration);
+    timeval_subtract(&duration, &stop_tv, &start_tv);
 
     print_results();
+}
+
+// timersub() is not portable, so here is a replacement
+// http://www.delorie.com/gnu/docs/glibc/libc_428.html
+int Queueable::timeval_subtract(struct timeval *result, struct timeval *x, struct timeval *y)
+{
+    /* Perform the carry for the later subtraction by updating y. */
+    if (x->tv_usec < y->tv_usec) {
+        int nsec = (y->tv_usec - x->tv_usec) / 1000000 + 1;
+        y->tv_usec -= 1000000 * nsec;
+        y->tv_sec += nsec;
+    }
+    if (x->tv_usec - y->tv_usec > 1000000) {
+        int nsec = (x->tv_usec - y->tv_usec) / 1000000;
+        y->tv_usec += 1000000 * nsec;
+        y->tv_sec -= nsec;
+    }
+
+    /* Compute the time remaining to wait.
+       tv_usec is certainly positive. */
+    result->tv_sec = x->tv_sec - y->tv_sec;
+    result->tv_usec = x->tv_usec - y->tv_usec;
+
+    /* Return 1 if result is negative. */
+    return x->tv_sec < y->tv_sec;
 }
 
 void Queueable::print_results()

@@ -5,6 +5,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <strings.h>
+#include <sys/socket.h>
 #include <sys/types.h>
 #include <sys/un.h>
 #include <unistd.h>
@@ -57,9 +58,11 @@ void Udds::send_alive()
 {
     int count = 0;
 
-    count = sendto(sockfd, "1", 1, 0, server_addr, server_addr_size);
+    // since the socket is connect()'ed, we use send() in the client or
+    // may receive "Transport endpoint *already* connected" error
+    count = send(sockfd, "1", 1, 0);
     if (count < 0)
-        perror("sendto on alive packet");
+        perror("send on alive packet");
 }
 
 void Udds::cleanup()

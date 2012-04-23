@@ -1,6 +1,8 @@
 #include "udss.h"
 
 #include <netinet/in.h>
+#include <strings.h>
+#include <sys/socket.h>
 #include <sys/types.h>
 #include <sys/un.h>
 
