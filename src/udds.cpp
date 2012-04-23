@@ -29,6 +29,8 @@ void Udds::after_fork()
             bzero(&from, from_len);
             from_len = sizeof(from);
             count = recvfrom(sockfd, buffer, sizeof(buffer), 0, (struct sockaddr *) &from, &from_len);
+            if (count < 0)
+                perror("recvfrom");
 
             D fprintf(stderr, "Received alive packet from %s\n", from.sun_path);
             if (sendto(sockfd, buffer, sizeof(buffer), 0, (struct sockaddr *) &from, sizeof(struct sockaddr_un)) < 0)

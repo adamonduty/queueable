@@ -2,7 +2,7 @@ CC=g++
 UNAME := $(shell uname)
 
 ifeq ($(UNAME), Linux)
-CFLAGS += -Wall -Wextra -g
+CXXFLAGS += -Wall -Wextra -g
 endif
 
 ifeq ($(UNAME), SunOS)

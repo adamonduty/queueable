@@ -54,6 +54,7 @@ bool Socket::setup_client()
     perform_client_bind();
     setup_client_connect();
     perform_client_connect();
+    return true;
 }
 
 void Socket::perform_client_socket()
