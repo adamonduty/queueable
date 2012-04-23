@@ -1,0 +1,44 @@
+= Queueable
+
+Queueable is a library for measuring the tolerance of various
+communication APIs to concurrent messaging. Queueable aims to
+discover which backend communication libraries provide the best
+foundation to build highly concurrent programs.
+
+Queueable consists of a base class interface that should be
+subclassed for each backend. The base class is designed to
+minimize developer effort while sharing as much code as possible
+between backends. For each test, Queueable performs this rough
+set of steps:
+
+  - before_fork() - initialize server resources
+  - fork()
+      - for the server
+      - after_fork() - setup server-specific resources
+      - test_enqueue - enqueue 1,000,000 items in batches of 1000
+      - cleanup() - signal clients to close
+
+      - for each client
+      - after_fork() - setup client-specific resources
+      - test_dequeue() - dequeue 1,000,000 items in batches of 1000
+      - cleanup() - close client-specific resources
+
+This process is repeated up to the maximum number of threads and
+maximum message size.
+
+== Building
+
+Queueable should be built with a simple `make`:
+
+  $ make
+
+== Running tests
+
+`make` creates an executable named `run_queueable`. It can be invoked manually
+or using
+
+  $ make test
+
+== Author
+
+Adam Lamar
