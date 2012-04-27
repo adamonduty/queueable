@@ -147,7 +147,7 @@ void Queueable::print_results()
     printf("<run>");
     printf("<backend>%s</backend>", backend_name());
     printf("<threads>%d</threads>", threads);
-    printf("<seconds>%ld.%06ld</seconds>", duration.tv_sec, duration.tv_usec);
+    printf("<seconds>%ld.%06ld</seconds>", (long) duration.tv_sec, (long) duration.tv_usec);
     printf("<msg_size>%d</msg_size>", msg_size);
     printf("</run>\n");
 }

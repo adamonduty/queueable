@@ -1,3 +1,5 @@
+#ifndef __APPLE__
+
 #include <fcntl.h>
 #include <mqueue.h>
 #include <stdio.h>
@@ -88,3 +90,4 @@ void Mq::dequeue(std::vector<std::string> * items)
 
     free(buffer);
 }
+#endif

@@ -5,6 +5,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <strings.h>
+#include <sys/errno.h>
 #include <sys/socket.h>
 #include <sys/types.h>
 #include <sys/un.h>
@@ -100,7 +101,14 @@ void Udds::enqueue(std::vector<std::string> * items)
 
     for (it = items->begin(); it != items->end(); ++it)
     {
-        count = sendto(sockfd, it->c_str(), it->size(), 0, (struct sockaddr *) &addr, addr_len);
+        // OS X datagrams require a retry when the buffer space is full.
+        // This ensures messages are not dropped.
+        // Under linux and solaris, this sendto will block until buffer
+        // space is available.
+        do
+        {
+            count = sendto(sockfd, it->c_str(), it->size(), 0, (struct sockaddr *) &addr, addr_len);
+        } while (count < 0 && errno == ENOBUFS);
 
         if (count < 0)
             perror("sendto");

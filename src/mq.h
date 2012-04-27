@@ -7,6 +7,7 @@
 
 #include "queueable.h"
 
+#ifndef __APPLE__
 class Mq: public Queueable {
     public:
         const char * backend_name() { return "POSIX Message Queues"; }
@@ -21,5 +22,5 @@ class Mq: public Queueable {
         long max_msg_size;
         std::string mq_name;
 };
-
+#endif
 #endif
