@@ -1,6 +1,8 @@
 #include <map>
 #include <stdio.h>
+#include <sstream>
 #include <string>
+#include <sys/time.h>
 #include <sys/utsname.h>
 
 #include "tcp.h"
@@ -11,6 +13,26 @@
 #ifndef __APPLE__
 #include "mq.h"
 #endif
+
+#include "md5.h"
+
+std::string unique_batch(struct utsname name)
+{
+    std::stringstream seed;
+    struct timeval tv;
+
+    gettimeofday(&tv, NULL);
+    seed << tv.tv_sec;
+    seed << tv.tv_usec;
+    seed << getpid();
+    seed << getppid();
+    seed << name.sysname;
+    seed << name.release;
+    seed << name.version;
+    seed << name.machine;
+
+    return md5(seed.str());
+}
 
 int main()
 {
@@ -26,6 +48,7 @@ int main()
     options["message_queue"] = "/queueable";
 
     uname(&name);
+    std::string uhash = unique_batch(name);
 
     printf("<?xml version=\"1.0\"?>\n");
     printf("<platform>\n");
@@ -34,6 +57,7 @@ int main()
     printf("<batches_attributes type=\"array\">\n");
 
     printf("<batch>\n");
+    printf("<uhash>%s</uhash>\n", uhash.c_str());
     printf("<runs_attributes type=\"array\">\n");
 
     Tcp tcp;
