@@ -144,12 +144,12 @@ int Queueable::timeval_subtract(struct timeval *result, struct timeval *x, struc
 
 void Queueable::print_results()
 {
-    printf("<test>");
-    printf("<type>%s</type>", backend_name());
+    printf("<run>");
+    printf("<backend>%s</backend>", backend_name());
     printf("<threads>%d</threads>", threads);
     printf("<seconds>%ld.%06ld</seconds>", duration.tv_sec, duration.tv_usec);
     printf("<msg_size>%d</msg_size>", msg_size);
-    printf("</test>\n");
+    printf("</run>\n");
 }
 
 void Queueable::test_enqueue(int num_items, uint32_t msg_size)

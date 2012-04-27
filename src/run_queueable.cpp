@@ -24,9 +24,12 @@ int main()
     uname(&name);
 
     printf("<?xml version=\"1.0\"?>\n");
-    printf("<test_run>\n");
-    printf("<platform><sysname>%s</sysname><release>%s</release><version>%s</version><machine>%s</machine></platform>\n",
+    printf("<platform>\n");
+    printf("<sysname>%s</sysname><release>%s</release><version>%s</version><machine>%s</machine>\n",
       name.sysname, name.release, name.version, name.machine);
+    printf("<batches_attributes type=\"array\">\n");
+    printf("<batch>\n");
+    printf("<runs_attributes type=\"array\">\n");
 
     Tcp tcp;
     tcp.run_tests(options);
@@ -40,7 +43,10 @@ int main()
     Mq mq;
     mq.run_tests(options);
 
-    printf("</test_run>\n");
+    printf("</runs_attributes>\n");
+    printf("</batch>\n");
+    printf("</batches_attributes>\n");
+    printf("</platform>\n");
 
     return 0;
 }
