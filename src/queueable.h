@@ -3,6 +3,7 @@
 
 #include <list>
 #include <map>
+#include <sstream>
 #include <string>
 #include <sys/time.h>
 #include <stdint.h>
@@ -23,7 +24,7 @@ class Queueable {
         virtual void enqueue(std::vector<std::string> * items) = 0;
         virtual void dequeue(std::vector<std::string> * items) = 0;
 
-        void run_tests(std::map<std::string, std::string> options);
+        void run_tests(std::stringstream *results, std::map<std::string, std::string> options);
         void run_test();
         void perform_fork();
         void start_test(std::string msg);
@@ -51,6 +52,7 @@ class Queueable {
         bool parent;
         std::list<int> children;
 
+        std::stringstream *results;
         int msg_size;
         int threads;
         int thread_id;

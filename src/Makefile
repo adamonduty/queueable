@@ -18,7 +18,7 @@ all: $(EXECUTABLES)
 run_queueable: run_queueable.cpp socket.cpp stream_socket.cpp queueable.cpp tcp.cpp udss.cpp udds.cpp mq.cpp md5.cpp
 
 test: all
-	time ./run_queueable
+	./run_queueable
 
 
 .PHONY: clean

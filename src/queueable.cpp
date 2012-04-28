@@ -1,5 +1,6 @@
 #include "queueable.h"
 
+#include <iomanip>
 #include <list>
 #include <map>
 #include <stdio.h>
@@ -13,9 +14,10 @@
 #include <sys/wait.h>
 #include <vector>
 
-void Queueable::run_tests(std::map<std::string, std::string> options)
+void Queueable::run_tests(std::stringstream *results, std::map<std::string, std::string> options)
 {
     this->options = options;
+    this->results = results;
     int max_msg_size = get_max_msg_size();
     int max_threads = get_max_threads();
 
@@ -144,12 +146,16 @@ int Queueable::timeval_subtract(struct timeval *result, struct timeval *x, struc
 
 void Queueable::print_results()
 {
-    printf("<run>");
-    printf("<backend>%s</backend>", backend_name());
-    printf("<threads>%d</threads>", threads);
-    printf("<seconds>%ld.%06ld</seconds>", (long) duration.tv_sec, (long) duration.tv_usec);
-    printf("<msg_size>%d</msg_size>", msg_size);
-    printf("</run>\n");
+    *results << "<run>";
+    *results << "<backend>" << backend_name() << "</backend>";
+    *results << "<threads>" << threads << "</threads>";
+    *results << "<seconds>" << (long) duration.tv_sec << ".";
+    *results << std::setfill('0') << std::setw(6) << (long) duration.tv_usec << "</seconds>";
+    *results << "<msg_size>" << msg_size << "</msg_size>";
+    *results << "</run>\n";
+
+    printf("%s: threads=%d, msg_size=%d, seconds=%ld.%06ld\n", backend_name(),
+        threads, msg_size, (long) duration.tv_sec, (long) duration.tv_usec);
 }
 
 void Queueable::test_enqueue(int num_items, uint32_t msg_size)
