@@ -113,6 +113,8 @@ void Udds::enqueue(std::vector<std::string> * items)
         if (count < 0)
             perror("sendto");
     }
+
+    ++connection_count;
 }
 
 void Udds::dequeue(std::vector<std::string> * items)
