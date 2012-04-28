@@ -10,7 +10,7 @@
 #ifndef __APPLE__
 class Mq: public Queueable {
     public:
-        const char * backend_name() { return "POSIX Message Queues"; }
+        const char * backend_name() { return "POSIX Message Queue"; }
         void before_fork();
         void after_fork();
         void cleanup();
