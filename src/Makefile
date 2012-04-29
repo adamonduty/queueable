@@ -7,7 +7,7 @@ LDLIBS=-lrt
 endif
 
 ifeq ($(UNAME), SunOS)
-LDLIBS=-lsocket -lnsl
+LDLIBS=-lsocket -lnsl -lrt
 endif
 
 

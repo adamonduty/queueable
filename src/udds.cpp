@@ -1,5 +1,6 @@
 #include "udds.h"
 
+#include <cerrno>
 #include <netinet/in.h>
 #include <sstream>
 #include <stdio.h>
