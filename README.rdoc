@@ -26,18 +26,42 @@ set of steps:
 This process is repeated up to the maximum number of threads and
 maximum message size.
 
+== Backends
+
+Queueable currently supports the following backends:
+
+* TCP Sockets
+* Unix Domain Stream Sockets
+* Unix Domain Datagram Sockets
+* POSIX Message Queues
+
+== Default Parameters
+
+Queueable uses several default parameters as defined in run_queueable.cpp.
+These are used to define tests. Queueable is designed to vary both message size
+and the number of threads up to a maximum. By default, these are message sizes
+up to 4096 bytes (where supported by the backend) and up to 32 threads.
+
 == Building
 
-Queueable should be built with a simple `make`:
+Queueable should be built with a simple +make+:
 
   $ make
 
 == Running tests
 
-`make` creates an executable named `run_queueable`. It can be invoked manually
++make+ creates an executable named +run_queueable+. It can be invoked manually
 or using
 
   $ make test
+
+Upon finishing the tests, Queueable will output a single XML file in your local
+directory with the test results. It will list a curl command to upload the
+test results to http://queueable.herokuapp.com .
+
+== License
+
+Queueable is released under the MIT license. See LICENSE.txt for details.
 
 == Author
 
