@@ -1,8 +1,8 @@
 all:
 	cd src && make
 
-test:
-	cd src && make test
+test: all
+	src/run_queueable
 
 clean:
 	cd src && make clean

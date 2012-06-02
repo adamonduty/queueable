@@ -101,11 +101,11 @@ int main()
     output << results.str();
     output.close();
 
-    printf("****************************************************************\n");
+    printf("*********************************************************************\n");
     printf("Tests complete. Submit results via curl:\n\n");
     printf("$ curl --header 'Content-type: application/xml' --header 'Accept: text/plain' --data @%s http://%s/platforms\n",
         filename.c_str(), HTTP_HOST);
-    printf("****************************************************************\n");
+    printf("*********************************************************************\n");
 
     return 0;
 }

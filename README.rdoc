@@ -59,6 +59,9 @@ Upon finishing the tests, Queueable will output a single XML file in your local
 directory with the test results. It will list a curl command to upload the
 test results to http://queueable.herokuapp.com .
 
+Upon submitting your results, you will be given a link to add more detailed
+information about your test results.
+
 == License
 
 Queueable is released under the MIT license. See LICENSE.txt for details.
