@@ -103,7 +103,7 @@ int main()
 
     printf("****************************************************************\n");
     printf("Tests complete. Submit results via curl:\n\n");
-    printf("$ curl --header 'Content-type: application/xml' --header 'Accept: application/xml' --data @%s http://%s/platforms\n",
+    printf("$ curl --header 'Content-type: application/xml' --header 'Accept: text/plain' --data @%s http://%s/platforms\n",
         filename.c_str(), HTTP_HOST);
     printf("****************************************************************\n");
 
