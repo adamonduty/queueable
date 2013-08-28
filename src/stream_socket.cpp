@@ -6,6 +6,7 @@
 #include <sys/socket.h>
 #include <sys/types.h>
 #include <vector>
+#include <unistd.h>
 
 void StreamSocket::after_fork()
 {

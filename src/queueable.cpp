@@ -13,6 +13,7 @@
 #include <sys/types.h>
 #include <sys/wait.h>
 #include <vector>
+#include <unistd.h>
 
 void Queueable::run_tests(std::stringstream *results, std::map<std::string, std::string> options)
 {

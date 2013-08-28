@@ -7,6 +7,7 @@
 #include <string>
 #include <sys/time.h>
 #include <sys/utsname.h>
+#include <unistd.h>
 
 #include "tcp.h"
 #include "udss.h"
